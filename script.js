@@ -1,59 +1,65 @@
-// 1) 카드 이미지 파일명 배열 (필요에 따라 파일명 추가)
-const images = ['card1.png', 'card2.png', 'card3.png'];
-const container = document.getElementById('cards-container');
-const selected = new Set();
+// script.js
 
-// 2) 카드 렌더링 & 클릭 토글
-images.forEach(name => {
-  const card = document.createElement('div');
-  card.className = 'card';
-  const img = document.createElement('img');
-  img.src = 'images/' + name;
-  card.appendChild(img);
+// 0) 디버깅용 로그
+console.log('✅ script.js 로드됨');
 
-  card.addEventListener('click', () => {
-    if (selected.has(name)) {
-      selected.delete(name);
-      card.classList.remove('selected');
-    } else {
-      selected.add(name);
-      card.classList.add('selected');
-    }
-    console.log('현재 선택:', Array.from(selected));
+// 1) DOM 준비 시 실행되도록 래핑
+document.addEventListener('DOMContentLoaded', () => {
+  // 2) 카드 이미지 파일명 배열
+  const images = ['card1.png', 'card2.png', 'card3.png'];
+  const container = document.getElementById('cards-container');
+  const selected = new Set();
+
+  console.log('📦 images 배열:', images);
+
+  // 3) 카드 렌더링
+  images.forEach(name => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const img = document.createElement('img');
+    img.src = 'images/' + name;
+    card.appendChild(img);
+    container.appendChild(card);
+
+    card.addEventListener('click', () => {
+      if (selected.has(name)) {
+        selected.delete(name);
+        card.classList.remove('selected');
+      } else {
+        selected.add(name);
+        card.classList.add('selected');
+      }
+      console.log('🖱️ 클릭됨:', name, '선택목록:', Array.from(selected));
+    });
   });
 
-  container.appendChild(card);
-});
-
-// 3) 저장 버튼 클릭 시 JSONP 호출
-document.getElementById('saveBtn').addEventListener('click', () => {
-  const cardsArray = Array.from(selected);
-  if (!cardsArray.length) {
-    alert('카드를 먼저 선택해 주세요');
-    return;
-  }
-
-  // 고유 콜백 함수명 생성
-  const callbackName = 'jsonpCB_' + Date.now();
-  window[callbackName] = (response) => {
-    if (response.status === 'success') {
-      alert('저장 성공: ' + cardsArray.join(', '));
-    } else {
-      alert('저장 실패');
-      console.error(response);
+  // 4) 저장 버튼 핸들러 (JSONP)
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const cardsArray = Array.from(selected);
+    console.log('💾 저장 시도, 선택:', cardsArray);
+    if (!cardsArray.length) {
+      alert('카드를 먼저 선택해 주세요');
+      return;
     }
-    delete window[callbackName];
-  };
 
-  // JSONP 요청용 <script> 태그 생성
-  const base = 'https://script.google.com/macros/s/AKfycbz4-fsDlRnmD8PGsCc7raVf6YnhTZsaMVi7lf-Mrmm2SylgPfJ84Iy-r55yV9g5dq7m/exec'; // 예: https://script.google.com/macros/s/.../exec
-  const params = [
-    'callback=' + callbackName,
-    'userId='   + encodeURIComponent('student123'),
-    'cards='    + encodeURIComponent(JSON.stringify(cardsArray))
-  ].join('&');
+    const callbackName = 'jsonpCB_' + Date.now();
+    window[callbackName] = (response) => {
+      console.log('🔔 JSONP 응답:', response);
+      alert(response.status === 'success'
+        ? '저장 성공: ' + cardsArray.join(', ')
+        : '저장 실패');
+      delete window[callbackName];
+    };
 
-  const jsonpScript = document.createElement('script');
-  jsonpScript.src = `${base}?${params}`;
-  document.body.appendChild(jsonpScript);
+    const base = 'YOUR_WEB_APP_URL';
+    const params = [
+      'callback=' + callbackName,
+      'userId='   + encodeURIComponent('student123'),
+      'cards='    + encodeURIComponent(JSON.stringify(cardsArray))
+    ].join('&');
+
+    const s = document.createElement('script');
+    s.src = `${base}?${params}`;
+    document.body.appendChild(s);
+  });
 });
