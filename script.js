@@ -11,7 +11,7 @@ document.getElementById('saveBtn').addEventListener('click', () => {
 
   // 스크립트 태그 동적 생성
   const script = document.createElement('script');
-  const base = 'YOUR_WEB_APP_URL'; // 끝에 /exec 붙여서
+  const base = 'https://script.google.com/macros/s/AKfycbz4-fsDlRnmD8PGsCc7raVf6YnhTZsaMVi7lf-Mrmm2SylgPfJ84Iy-r55yV9g5dq7m/exec'; // 끝에 /exec 붙여서
   const query = 
     '?callback=' + callbackName +
     '&userId='   + encodeURIComponent('student123') +
