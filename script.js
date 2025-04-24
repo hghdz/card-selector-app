@@ -1,18 +1,17 @@
 // script.js
 
-// 0) 디버깅용 로그
+// 디버깅: 파일이 잘 로드됐는지 확인
 console.log('✅ script.js 로드됨');
 
-// 1) DOM 준비 시 실행되도록 래핑
 document.addEventListener('DOMContentLoaded', () => {
-  // 2) 카드 이미지 파일명 배열
+  // 1) 카드 이미지 목록
   const images = ['card1.png', 'card2.png', 'card3.png'];
   const container = document.getElementById('cards-container');
   const selected = new Set();
 
   console.log('📦 images 배열:', images);
 
-  // 3) 카드 렌더링
+  // 2) 카드 렌더링 & 클릭 핸들러
   images.forEach(name => {
     const card = document.createElement('div');
     card.className = 'card';
@@ -33,33 +32,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4) 저장 버튼 핸들러 (JSONP)
-  document.getElementById('saveBtn').addEventListener('click', () => {
+  // 3) 저장 버튼 핸들러 (JSONP)
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.addEventListener('click', () => {
     const cardsArray = Array.from(selected);
     console.log('💾 저장 시도, 선택:', cardsArray);
+
     if (!cardsArray.length) {
       alert('카드를 먼저 선택해 주세요');
       return;
     }
 
+    // JSONP callback 이름
     const callbackName = 'jsonpCB_' + Date.now();
     window[callbackName] = (response) => {
       console.log('🔔 JSONP 응답:', response);
-      alert(response.status === 'success'
-        ? '저장 성공: ' + cardsArray.join(', ')
-        : '저장 실패');
+      if (response && response.status === 'success') {
+        alert('저장 성공: ' + cardsArray.join(', '));
+      } else {
+        alert('저장 실패');
+      }
       delete window[callbackName];
     };
 
+    // 여기를 **Web App URL** 로 교체하세요 (스프레드시트 URL 아님!)
     const base = 'https://script.google.com/macros/s/AKfycbwMj9ROJZU_9skVqHvg7zr--AdABGF5tOUdPEqa533eF94V_Ht-DAOvznoYEPx9TiYp/exec';
+
     const params = [
       'callback=' + callbackName,
       'userId='   + encodeURIComponent('student123'),
       'cards='    + encodeURIComponent(JSON.stringify(cardsArray))
     ].join('&');
 
-    const s = document.createElement('script');
-    s.src = `${base}?${params}`;
-    document.body.appendChild(s);
+    const jsonpScript = document.createElement('script');
+    jsonpScript.src = `${base}?${params}`;
+    document.body.appendChild(jsonpScript);
   });
 });
+
