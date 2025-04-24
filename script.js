@@ -1,3 +1,11 @@
+console.log('✅ script.js 로드됨');
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  console.log('🖱️ 저장 버튼 클릭됨, 선택된 카드:', Array.from(selected));
+  // ...fetch 호출 부분...
+});
+
+
 // 사용할 이미지 파일명 배열
 const images = ['card1.png', 'card2.png', 'card3.png'];
 const container = document.getElementById('cards-container');
@@ -24,6 +32,15 @@ images.forEach(name => {
 });
 
 // (위에는 그대로 두세요: images, container, selected 설정 등)
+
+
+console.log('✅ script.js 로드됨');
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  console.log('🖱️ 저장 버튼 클릭됨, 선택된 카드:', Array.from(selected));
+  // ...fetch 호출 부분...
+});
+
 
 // 저장 버튼 클릭 시 GAS Web App 호출
 document.getElementById('saveBtn').addEventListener('click', () => {
