@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       delete window[callbackName];
     };
 
-    const base = 'YOUR_WEB_APP_URL';
+    const base = 'https://script.google.com/macros/s/AKfycbwMj9ROJZU_9skVqHvg7zr--AdABGF5tOUdPEqa533eF94V_Ht-DAOvznoYEPx9TiYp/exec';
     const params = [
       'callback=' + callbackName,
       'userId='   + encodeURIComponent('student123'),
